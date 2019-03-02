@@ -2,7 +2,7 @@ require "minitest/autorun"
 require "require2"
 
 class TestRequire2 < MiniTest::Test
-  CONSTANTS = %w[Foo Bar Baz]
+  CONSTANTS = %w[Foo Bar Baz CSV]
   FILES = %w[a/b.rb a/c.rb]
 
   def setup
@@ -104,4 +104,34 @@ class TestRequire2 < MiniTest::Test
 
     assert_equal A::C::Foo, Foo
   end
+
+  def test_removes_loaded_features_on_error
+    assert_raises NameError do
+      require2 "a/b" => {:bad => "foo"}
+    end
+
+    assert $".none? { |path| path.end_with?("a/b.rb") }
+  end
+
+  def test_removes_loaded_dependency_features_on_error
+    assert_raises NameError do
+      require2 "a/just_dependencies" => {:bad => "foo"}
+    end
+
+    assert $".none? { |path| path.end_with?("a/just_dependencies.rb") }
+    assert $".none? { |path| path.end_with?("a/b.rb") }
+    assert $".none? { |path| path.end_with?("a/c.rb") }
+  end
+
+  def test_does_not_remove_other_loaded_dependency_features_on_error
+    require "csv"
+
+    assert_raises NameError do
+      require2 "a/b" => {:bad => "foo"}
+    end
+
+    # CSV was successfuly loaded outside require2 so make sure it's not removed by require2
+    assert $".any? { |path| path.end_with?("/csv.rb") }
+  end
+
 end

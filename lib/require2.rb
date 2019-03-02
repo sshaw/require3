@@ -5,6 +5,8 @@ module Require2
     def require(config)
       lib, aliases = config.instance_of?(Hash) ? config.first : config
 
+      last_loaded = $"[-1]
+
       first_load = Kernel::require(lib)
       return first_load unless first_load && aliases
 
@@ -13,20 +15,28 @@ module Require2
       lib = lib.sub(%r{\A(?:\.\.?/)+}, "")
       lib.sub!(/\.(?:rb|o|dll)\z/, "")
 
-      aliases = const_get(camelize(lib)).constants if aliases == "*".freeze
+      begin
+        # FIXME: a/b/c may not always define A::B::C
+        aliases = const_get(camelize(lib)).constants if aliases == "*".freeze
 
-      case aliases
-      when String
-        set_alias(lib, aliases)
-      when Array
-        aliases.each { |name| set_alias("#{lib}/#{name}", name) }
-      else
-        aliases.each do |target, alias_as|
-          target = target.to_s
-          # If the target has a namespace use it as is
-          target = "#{lib}/#{target}" unless target.include?("::")
-          set_alias(target, alias_as)
+        case aliases
+        when String
+          set_alias(lib, aliases)
+        when Array
+          aliases.each { |name| set_alias("#{lib}/#{name}", name) }
+        else
+          aliases.each do |target, alias_as|
+            target = target.to_s
+            # If the target has a namespace use it as is
+            target = "#{lib}/#{target}" unless target.include?("::")
+            set_alias(target, alias_as)
+          end
         end
+      rescue
+        # Remove libs that were loaded by our require
+        # Is this portable?
+        $".pop while $".any? && $"[-1] != last_loaded
+        raise
       end
 
       first_load
