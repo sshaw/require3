@@ -35,6 +35,18 @@ class TestRequire2 < MiniTest::Test
     assert_equal A::B, Foo
   end
 
+  def test_with_glob
+    require2 "a/b" => "*"
+
+    assert Object.const_defined?("Foo")
+    assert Object.const_defined?("Bar")
+    assert Object.const_defined?("A::B::Foo")
+    assert Object.const_defined?("A::B::Bar")
+
+    assert_equal A::B::Foo, Foo
+    assert_equal A::B::Bar, Bar
+  end
+
   def test_with_array_argument
     require2 "a/b" => %w[foo bar]
 

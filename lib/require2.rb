@@ -13,6 +13,8 @@ module Require2
       lib = lib.sub(%r{\A(?:\.\.?/)+}, "")
       lib.sub!(/\.(?:rb|o|dll)\z/, "")
 
+      aliases = const_get(camelize(lib)).constants if aliases == "*".freeze
+
       case aliases
       when String
         set_alias(lib, aliases)
@@ -37,7 +39,8 @@ module Require2
     end
 
     def camelize(term)
-      string = term.dup
+      # term can be a Symbol or a String that's frozen (so we dup)
+      string = term.to_s.dup
 
       # More or less stolen from ActiveSupport::Inflector#camelize
       # https://api.rubyonrails.org/v4.2.6/classes/ActiveSupport/Inflector.html#method-i-camelize

@@ -1,6 +1,6 @@
 # require2
 
-`Kernel#require` something and alias it.
+`Kernel#require` something and make it accessible via a different namespace.
 
 [![Build Status](https://travis-ci.org/sshaw/require2.svg?branch=master)](https://travis-ci.org/sshaw/require2)
 
@@ -11,7 +11,18 @@ require "require2"  # Oh the irony
 ```
 
 Then:
+
 ```rb
+require2 "some/very/long/name/here" => "*"
+
+# Same as:
+require "some/very/long/name/here"
+Foo = Some::Very::Long::Name::Here::Foo
+Bar = Some::Very::Long::Name::Here::Bar
+CONSTANT = Some::Very::Long::Name::Here::CONSTANT
+# ...
+# For all constants in Some::Very::Long::Name::Here
+
 require2 "some/very/long/name/here" => "foo"
 
 # Same as:
@@ -32,11 +43,12 @@ require "some/very/long/name/here"
 FooHoo = Some::Very::Long::Name::Here::Foo
 BarHar = Some::Very::Long::Name::Here::Bar
 
-require2 "some/very/long/name/here" => { "Some::Very::Foo" => "foo" }
+require2 "some/very/long/name/here" => { "Some::Very::Foo" => "foo", :bar => "BarHar" }
 
 # Same as:
 require "some/very/long/name/here"
 Foo = Some::Very::Foo
+BarHar = Some::Very::Long::Name::Here::Bar
 ```
 
 `require2` mostly behaves like `Kernerl#require` but, if what you want to alias does not exist, a `NameError` will be raised.
