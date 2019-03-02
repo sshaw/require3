@@ -84,12 +84,12 @@ class TestRequire2 < MiniTest::Test
 
   def test_relative_path_using_array_argument
     Dir.chdir @libroot do
-      require2 "./a/c.rb" => "foo"
+      require2 "./a/c.rb" => %w[foo]
     end
 
     assert Object.const_defined?("Foo")
-    assert Object.const_defined?("A::C")
+    assert Object.const_defined?("A::C::Foo")
 
-    assert_equal A::C, Foo
+    assert_equal A::C::Foo, Foo
   end
 end
