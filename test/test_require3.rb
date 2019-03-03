@@ -1,7 +1,7 @@
 require "minitest/autorun"
-require "require2"
+require "require3"
 
-class TestRequire2 < MiniTest::Test
+class TestRequire3 < MiniTest::Test
   CONSTANTS = %w[Foo Bar Baz CSV]
   FILES = %w[a/b.rb a/c.rb]
 
@@ -19,24 +19,24 @@ class TestRequire2 < MiniTest::Test
   end
 
   def test_returns_true_if_not_loaded_and_false_if_loaded
-    assert_equal true, require2("a/b")
-    assert_equal false, require2("a/b")
+    assert_equal true, require3("a/b")
+    assert_equal false, require3("a/b")
   end
 
   def test_without_aliases
-    require2 "a/b"
+    require3 "a/b"
     assert Object.const_defined?("A::B")
   end
 
   def test_with_simple_alias
-    require2 "a/b" => "foo"
+    require3 "a/b" => "foo"
     assert Object.const_defined?("Foo")
     assert Object.const_defined?("A::B")
     assert_equal A::B, Foo
   end
 
   def test_with_glob
-    require2 "a/b" => "*"
+    require3 "a/b" => "*"
 
     assert Object.const_defined?("Foo")
     assert Object.const_defined?("Bar")
@@ -48,7 +48,7 @@ class TestRequire2 < MiniTest::Test
   end
 
   def test_with_array_argument
-    require2 "a/b" => %w[foo bar]
+    require3 "a/b" => %w[foo bar]
 
     assert Object.const_defined?("Foo")
     assert Object.const_defined?("Bar")
@@ -60,7 +60,7 @@ class TestRequire2 < MiniTest::Test
   end
 
   def test_with_hash_aliases_using_path_style_names
-    require2 "a/b" => { :foo => "foo", "a/baz" => "baz" }
+    require3 "a/b" => { :foo => "foo", "a/baz" => "baz" }
 
     assert Object.const_defined?("Foo")
     assert Object.const_defined?("Baz")
@@ -72,7 +72,7 @@ class TestRequire2 < MiniTest::Test
   end
 
   def test_with_hash_aliases_using_class_style_names
-    require2 "a/b" => { "Foo" => "Foo", "A::Baz" => "Baz" }
+    require3 "a/b" => { "Foo" => "Foo", "A::Baz" => "Baz" }
 
     assert Object.const_defined?("Foo")
     assert Object.const_defined?("Baz")
@@ -85,7 +85,7 @@ class TestRequire2 < MiniTest::Test
 
   def test_relative_path_simple_alias
     Dir.chdir @libroot do
-      require2 "./a/c.rb" => "foo"
+      require3 "./a/c.rb" => "foo"
     end
 
     assert Object.const_defined?("Foo")
@@ -96,7 +96,7 @@ class TestRequire2 < MiniTest::Test
 
   def test_relative_path_using_array_argument
     Dir.chdir @libroot do
-      require2 "./a/c.rb" => %w[foo]
+      require3 "./a/c.rb" => %w[foo]
     end
 
     assert Object.const_defined?("Foo")
@@ -107,7 +107,7 @@ class TestRequire2 < MiniTest::Test
 
   def test_removes_loaded_features_on_error
     assert_raises NameError do
-      require2 "a/b" => {:bad => "foo"}
+      require3 "a/b" => {:bad => "foo"}
     end
 
     assert $".none? { |path| path.end_with?("a/b.rb") }
@@ -115,7 +115,7 @@ class TestRequire2 < MiniTest::Test
 
   def test_removes_loaded_dependency_features_on_error
     assert_raises NameError do
-      require2 "a/just_dependencies" => {:bad => "foo"}
+      require3 "a/just_dependencies" => {:bad => "foo"}
     end
 
     assert $".none? { |path| path.end_with?("a/just_dependencies.rb") }
@@ -127,10 +127,10 @@ class TestRequire2 < MiniTest::Test
     require "csv"
 
     assert_raises NameError do
-      require2 "a/b" => {:bad => "foo"}
+      require3 "a/b" => {:bad => "foo"}
     end
 
-    # CSV was successfuly loaded outside require2 so make sure it's not removed by require2
+    # CSV was successfuly loaded outside require3 so make sure it's not removed by require3
     assert $".any? { |path| path.end_with?("/csv.rb") }
   end
 

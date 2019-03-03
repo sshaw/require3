@@ -2,8 +2,6 @@ sudo: false
 cache: bundler
 language: ruby
 rvm:
-  - jruby-19mode
-  - jruby-9000
   - 2.1
   - 2.2
   - 2.3

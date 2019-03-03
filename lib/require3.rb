@@ -1,4 +1,4 @@
-require "require2/version"
+require "require3/version"
 
 # Don't pollute global namespace
 begin
@@ -9,7 +9,7 @@ ensure
   ENV["ALIAS2_NO_EXPORT"] = old
 end
 
-module Require2
+module Require3
   class << self
     def require(config)
       lib, aliases = config.instance_of?(Hash) ? config.first : config
@@ -71,6 +71,6 @@ module Require2
   end
 end
 
-def require2(name)
-  Require2.require(name)
+def require3(name)
+  Require3.require(name)
 end

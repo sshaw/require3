@@ -1,18 +1,18 @@
-# require2
+# require3
 
 `Kernel#require` something and make its contents accessible via a different namespace.
 
-[![Build Status](https://travis-ci.org/sshaw/require2.svg?branch=master)](https://travis-ci.org/sshaw/require2)
+[![Build Status](https://travis-ci.org/sshaw/require3.svg?branch=master)](https://travis-ci.org/sshaw/require3)
 
 ## Usage
 
 ```rb
-require "require2"  # Oh the irony
+require "require3"  # Oh the irony
 ```
 
 Now load the desired files and specify some rules:
 ```rb
-require2 "some/very/long/name/here" => "*"
+require3 "some/very/long/name/here" => "*"
 ```
 
 This will make everything accessible via the top-level namespace. It's the same as:
@@ -23,7 +23,7 @@ include Some::Very::Long::Name::Here
 
 Or access it as `Foo`:
 ```rb
-require2 "some/very/long/name/here" => "foo"
+require3 "some/very/long/name/here" => "foo"
 ```
 
 Same as:
@@ -34,7 +34,7 @@ Foo = Some::Very::Long::Name::Here
 
 If you only want to access `Foo` and `Bar`:
 ```rb
-require2 "some/very/long/name/here" => %w[foo bar]
+require3 "some/very/long/name/here" => %w[foo bar]
 ```
 
 Same as:
@@ -46,12 +46,12 @@ Bar = Some::Very::Long::Name::Here::Bar
 
 You can also provide the names as `Symbol`s and/or using their proper case:
 ```rb
-require2 "some/very/long/name/here" => [:Foo, "Bar"]
+require3 "some/very/long/name/here" => [:Foo, "Bar"]
 ```
 
 Use a `Hash` to specify alternate names:
 ```rb
-require2 "some/very/long/name/here" => { :foo => "foo_hoo", :bar => "BarHar" }
+require3 "some/very/long/name/here" => { :foo => "foo_hoo", :bar => "BarHar" }
 ```
 
 
@@ -64,7 +64,7 @@ BarHar = Some::Very::Long::Name::Here::Bar
 
 Or:
 ```
-require2 "some/very/long/name/here" => { "Some::Very::Foo" => "foo", :bar => "BarHar" }
+require3 "some/very/long/name/here" => { "Some::Very::Foo" => "foo", :bar => "BarHar" }
 ```
 
 Same as:
@@ -74,16 +74,16 @@ Foo = Some::Very::Foo
 BarHar = Some::Very::Long::Name::Here::Bar
 ```
 
-`require2` mostly behaves like `Kernerl#require` but, if what you want to alias does not exist, a `NameError` will be raised.
+`require3` mostly behaves like `Kernerl#require` but, if what you want to alias does not exist, a `NameError` will be raised.
 
 Path names are converted to class names using the same rules as [Rails' `String#camelize`](https://api.rubyonrails.org/v4.2.6/classes/ActiveSupport/Inflector.html#method-i-camelize) (though this library _is not_ a dependency). If this conversion fails you must explicitly provide the name. A convoluted example:
 
 ```rb
 # This fails as we try to alias Net::Http
-require2 "net/http" => "n"
+require3 "net/http" => "n"
 
 # Do this instead
-require2 "net/http" => { "Net::HTTP" => "n" }
+require3 "net/http" => { "Net::HTTP" => "n" }
 ```
 
 ## See Also
