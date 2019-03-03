@@ -1,6 +1,15 @@
-module Require2
-  VERSION = "0.0.1".freeze
+require "require2/version"
 
+# Don't pollute global namespace
+begin
+  old = ENV["ALIAS2_NO_EXPORT"]
+  ENV["ALIAS2_NO_EXPORT"] = "1"
+  require "alias2"
+ensure
+  ENV["ALIAS2_NO_EXPORT"] = old
+end
+
+module Require2
   class << self
     def require(config)
       lib, aliases = config.instance_of?(Hash) ? config.first : config
@@ -16,9 +25,9 @@ module Require2
       lib.sub!(/\.(?:rb|o|dll)\z/, "")
 
       begin
-        # FIXME: a/b/c may not always define A::B::C
         aliases = const_get(camelize(lib)).constants if aliases == "*".freeze
 
+        # FIXME: a/b/c may not always define A::B::C
         case aliases
         when String
           set_alias(lib, aliases)
@@ -45,7 +54,7 @@ module Require2
     private
 
     def set_alias(target, alias_as)
-      Object.const_set(camelize(alias_as), Object.const_get(camelize(target)))
+      Alias2.alias(camelize(target), camelize(alias_as))
     end
 
     def camelize(term)

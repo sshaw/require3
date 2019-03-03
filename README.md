@@ -1,6 +1,6 @@
 # require2
 
-`Kernel#require` something and make it accessible via a different namespace.
+`Kernel#require` something and make its contents accessible via a different namespace.
 
 [![Build Status](https://travis-ci.org/sshaw/require2.svg?branch=master)](https://travis-ci.org/sshaw/require2)
 
@@ -10,42 +10,65 @@
 require "require2"  # Oh the irony
 ```
 
-Then:
-
+Now load the desired files and specify some rules:
 ```rb
 require2 "some/very/long/name/here" => "*"
+```
 
-# Same as:
+This will make everything accessible via the top-level namespace. It's the same as:
+```rb
 require "some/very/long/name/here"
-Foo = Some::Very::Long::Name::Here::Foo
-Bar = Some::Very::Long::Name::Here::Bar
-CONSTANT = Some::Very::Long::Name::Here::CONSTANT
-# ...
-# For all constants in Some::Very::Long::Name::Here
+include Some::Very::Long::Name::Here
+```
 
+Or access it as `Foo`:
+```rb
 require2 "some/very/long/name/here" => "foo"
+```
 
-# Same as:
+Same as:
+```rb
 require "some/very/long/name/here"
 Foo = Some::Very::Long::Name::Here
+```
 
+If you only want to access `Foo` and `Bar`:
+```rb
 require2 "some/very/long/name/here" => %w[foo bar]
+```
 
-# Same as:
+Same as:
+```rb
 require "some/very/long/name/here"
 Foo = Some::Very::Long::Name::Here::Foo
 Bar = Some::Very::Long::Name::Here::Bar
+```
 
+You can also provide the names as `Symbol`s and/or using their proper case:
+```rb
+require2 "some/very/long/name/here" => [:Foo, "Bar"]
+```
+
+Use a `Hash` to specify alternate names:
+```rb
 require2 "some/very/long/name/here" => { :foo => "foo_hoo", :bar => "BarHar" }
+```
 
-# Same as:
+
+Same as:
+```rb
 require "some/very/long/name/here"
 FooHoo = Some::Very::Long::Name::Here::Foo
 BarHar = Some::Very::Long::Name::Here::Bar
+```
 
+Or:
+```
 require2 "some/very/long/name/here" => { "Some::Very::Foo" => "foo", :bar => "BarHar" }
+```
 
-# Same as:
+Same as:
+```rb
 require "some/very/long/name/here"
 Foo = Some::Very::Foo
 BarHar = Some::Very::Long::Name::Here::Bar
@@ -68,6 +91,7 @@ require2 "net/http" => { "Net::HTTP" => "n" }
 * [aliased](https://metacpan.org/pod/aliased) - The Perl module that served as inspiration
 * [Modulation](https://github.com/digital-fabric/modulation) - Add explicit import and export declarations to your code
 * [class2](https://github.com/sshaw/class2) - Easily create hierarchies that support nested attributes, type conversion, serialization and more
+* [alias2](https://github.com/sshaw/alias2) - Make classes, modules, and constants accessible via a different namespace.
 
 ## Author
 
