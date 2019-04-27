@@ -32,14 +32,6 @@ require "some/very/long/name/here"
 Foo = Some::Very::Long::Name::Here
 ```
 
-You can also provide a block:
-```rb
-require3 "ap" do |success|
-  # Load pp is AwesomePrint is not available
-  require "pp" unless success
-end
-```
-
 If you only want to access `Foo` and `Bar`:
 ```rb
 require3 "some/very/long/name/here" => %w[foo bar]
@@ -62,7 +54,6 @@ Use a `Hash` to specify alternate names:
 require3 "some/very/long/name/here" => { :foo => "foo_hoo", :bar => "BarHar" }
 ```
 
-
 Same as:
 ```rb
 require "some/very/long/name/here"
@@ -80,6 +71,23 @@ Same as:
 require "some/very/long/name/here"
 Foo = Some::Very::Foo
 BarHar = Some::Very::Long::Name::Here::Bar
+```
+
+You can also provide a block:
+```rb
+require3 "ap" do |success|
+  # Load pp if AwesomePrint is not available
+  require "pp" unless success
+end
+```
+
+Same as:
+```rb
+begin
+  require "ap"
+rescue LoadError
+  require "pp"
+end
 ```
 
 `require3` mostly behaves like `Kernerl#require` but, if what you want to alias does not exist, a `NameError` will be raised.
