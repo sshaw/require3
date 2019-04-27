@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = "skye.shaw@gmail.com"
   s.test_files  = Dir["test/**/*.*"]
   s.files       = Dir["lib/**/*.rb"] + s.test_files
-  s.homepage    = "http://github.com/sshaw/require2"
+  s.homepage    = "http://github.com/sshaw/require3"
   s.license     = "MIT"
   s.add_dependency "alias2"
   s.add_development_dependency "bundler", "~> 1.8"
