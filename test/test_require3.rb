@@ -134,4 +134,30 @@ class TestRequire3 < MiniTest::Test
     assert $".any? { |path| path.end_with?("/csv.rb") }
   end
 
+  def test_block_given_load_succeeded
+    result = require3 "a/b" do |success|
+      assert success
+    end
+
+    assert result
+  end
+
+  def test_block_given_load_failed
+    result = require3 "__FOO__" do |success|
+      assert !success, "block called with false argument"
+    end
+
+    assert !result
+  end
+
+  def test_block_given_with_aliases
+    result = require3 "a/b" => "foo" do |success|
+      assert success
+    end
+
+    assert result
+    assert Object.const_defined?("Foo")
+    assert Object.const_defined?("A::B")
+    assert_equal A::B, Foo
+  end
 end

@@ -16,8 +16,17 @@ module Require3
 
       last_loaded = $"[-1]
 
-      first_load = Kernel::require(lib)
-      return first_load unless first_load && aliases
+      begin
+        first_load = Kernel::require(lib)
+      rescue LoadError
+        yield false if block_given?
+        return false
+      end
+
+      unless first_load && aliases
+        yield first_load if block_given?
+        return first_load
+      end
 
       # Path/file name components.
       # lib can be frozen so we use sub() first
@@ -48,6 +57,8 @@ module Require3
         raise
       end
 
+      yield true if block_given?
+
       first_load
     end
 
@@ -71,6 +82,6 @@ module Require3
   end
 end
 
-def require3(name)
-  Require3.require(name)
+def require3(name, &block)
+  Require3.require(name, &block)
 end

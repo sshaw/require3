@@ -1,6 +1,6 @@
 # require3
 
-`Kernel#require` something and make its contents accessible via a different namespace.
+`Kernel#require` something and make its contents accessible via a different namespace. Execute block after requiring.
 
 [![Build Status](https://travis-ci.org/sshaw/require3.svg?branch=master)](https://travis-ci.org/sshaw/require3)
 
@@ -30,6 +30,14 @@ Same as:
 ```rb
 require "some/very/long/name/here"
 Foo = Some::Very::Long::Name::Here
+```
+
+You can also provide a block:
+```rb
+require3 "ap" do |success|
+  # Load pp is AwesomePrint is not available
+  require "pp" unless success
+end
 ```
 
 If you only want to access `Foo` and `Bar`:
